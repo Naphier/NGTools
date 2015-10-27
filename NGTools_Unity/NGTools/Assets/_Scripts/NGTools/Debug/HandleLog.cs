@@ -2,6 +2,8 @@ using UnityEngine;
 using NG;
 /// <summary>
 /// Handle log messages callbacks for NG.Assert and NG.Debug
+/// Use this script as the bridge between NGAssertDebug and NGDebugConsole
+/// Make any custom settings and assign callbacks here.
 /// </summary>
 public class HandleLog : MonoBehaviour
 {
@@ -14,8 +16,8 @@ public class HandleLog : MonoBehaviour
         DebugConsole.instance.shouldTakeScreenShot = true;
 
         // if taking screenshot via DebugConsole manually then should set
-        // NG.AssertDebugConfig to not take screenshots
-        AssertDebugConfig.takeScreenShot = false;
+        // NG.AssertDebugConfig to not take screenshots -- should be done in AssertDebugConfig and saved to personal settings
+        AssertDebugConfig.instance.takeScreenShot = false;
 
         // set button delegates for debug console if needed
         //DebugConsole.instance.ScreenshotButtonCallback += null;
@@ -31,7 +33,7 @@ public class HandleLog : MonoBehaviour
         // Debug Console
         DebugConsole.instance.AddMessage(logString + "\n" + stackTrace, type);
 
-        if (AssertDebugConfig.ShowGuiLogConsoleOnError())
+        if (AssertDebugConfig.instance.ShowGuiLogConsoleOnError())
         {
             if (type == LogType.Error || type == LogType.Assert || type == LogType.Exception)
             {
@@ -44,7 +46,7 @@ public class HandleLog : MonoBehaviour
     void Update()
     {
         // toggle the debug console
-        if (Input.GetKeyDown(AssertDebugConfig.debugConsoleKey))
+        if (Input.GetKeyDown(AssertDebugConfig.instance.debugConsoleKey))
         {
             DebugConsole.instance.isVisible = !DebugConsole.instance.isVisible;
         }

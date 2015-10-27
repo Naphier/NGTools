@@ -1,4 +1,4 @@
-#define NG_RIGIDBODY_EXTENSION
+#define NG_RIGIDBODY_EXTENSION //define this if using NGRigidbodyPauser.cs
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -8,37 +8,70 @@ namespace NG
 {
     public enum DebugWarningLevel
     { all, warning, error, none }
+
     public enum FailureReaction
     { pause, kill, none}
 
     /// <summary>
-    /// all, assertOnly, and debugOnly will always write to file after each message.
-    /// allFailureOnly, assertFailureOnly, and debugErrorOnly will only write to 
-    ///     file on failure and stores messages in a list before writing.
-    /// Log file is tab seperated, so don't use tabs in your log messages!
+    /// Options:
+    /// <para />all, assertOnly, and debugOnly will always write to file after each message.
+    /// <para />allFailureOnly, assertFailureOnly, and debugErrorOnly will only write to
+    /// <para />file on failure and stores messages in a list before writing.
+    /// <para />Log file is tab seperated, so don't use tabs in your log messages!
     /// </summary>
     public enum LogToFileCondition
     { all, assertOnly, debugOnly, allFailureOnly, assertFailureOnly, debugErrorOnly, none }
 
+    // TODO
+    //need to convert all public statics to public and access via instance
+    // convert all to serializable, add saving and loading methods
+
     public class AssertDebugConfig
     {
-        public static bool masterDisable = false;
-        public static DebugWarningLevel debugLogWarningLevel = DebugWarningLevel.all;
-        public static bool assertDisable = false;
-        public static FailureReaction assertFailureReaction = FailureReaction.pause;
-        public static FailureReaction debugReaction = FailureReaction.pause;
-        public static bool shouldAssertDoFailure = true;
-        public static bool shouldLogErrorDoFailure = true;
-        public static LogToFileCondition logToFileCondition = LogToFileCondition.all;
-        
-        public static string logFileName = "debug";
-        public static string logFileExt = ".txt";
-        public static bool takeScreenShot = false; //todo
-        public static string screenShotFileName = "error_screen";
-        public static KeyCode debugConsoleKey = KeyCode.BackQuote;
+        private static AssertDebugConfig m_instance;
+        public static AssertDebugConfig instance
+        {
+            get
+            {
+                if (m_instance == null)
+                    m_instance = new AssertDebugConfig();
+                return m_instance;
+            }
+        }
 
-        // show gui in builds only
-        public static bool ShowGuiLogConsoleOnError()
+        // Disables all logging
+        public bool masterDisable = false;
+
+        // Set what debug messages to log
+        public DebugWarningLevel debugLogWarningLevel = DebugWarningLevel.all;
+
+        // Disable assertion messages
+        public bool assertDisable = false;
+
+        // Run in debug build only
+        public bool runInDebugBuildOnly = true;
+
+        // What to do when we encounter a failure
+        public FailureReaction assertFailureReaction = FailureReaction.pause;
+        public FailureReaction debugReaction = FailureReaction.pause;
+        public bool shouldAssertDoFailure = true;
+        public bool shouldLogErrorDoFailure = true;
+
+        // When to log to file - see enum definition for details
+        public LogToFileCondition logToFileCondition = LogToFileCondition.all;
+        public string logFileName = "debug";
+        public string logFileExt = ".txt";
+        public string debugFileHeader = "Time\tError Type\tMessage\tStack Trace";
+
+        // Set to automatically take screenshot on failure
+        public bool takeScreenShot = false;
+        public string screenShotFileName = "error_screen";
+
+        // Set the key that brings up the in-game debug console
+        public KeyCode debugConsoleKey = KeyCode.BackQuote;
+
+        // Set whether to show NGDebugConsole on error in editor, builds, or both.
+        public bool ShowGuiLogConsoleOnError()
         {
 #if !UNITY_EDITOR
             return true;
@@ -53,7 +86,7 @@ namespace NG
         /// When running a standalone build this will be MyDocuments/CompanyName/ApplicationName/logs
         /// </summary>
         /// <returns></returns>
-        public static string GetLogFilePath()
+        public string GetLogFilePath()
         {
             string path = Application.dataPath;
 #if !UNITY_EDITOR
@@ -65,18 +98,16 @@ namespace NG
             {
                 Directory.CreateDirectory(path);
             }
-#endif
-
-            
+#endif          
             return path;
         }
 
-        public static string GetDebugFileName()
+        public string GetDebugFileName()
         {
             return GetLogFilePath() + "/" + logFileName + "_" + AssertDateStamp.FileDate() + logFileExt;
         }
 
-        public static string GetScreenShotFileName()
+        public string GetScreenShotFileName()
         {
             int extNum = 0;
             while (File.Exists(ScreenShotFileName(extNum)))
@@ -85,16 +116,16 @@ namespace NG
             return ScreenShotFileName(extNum);
         }
 
-        private static string ScreenShotFileName(int extNum)
+        private string ScreenShotFileName(int extNum)
         {
             return GetLogFilePath() + "/" + screenShotFileName + "_" + AssertDateStamp.FileDate() + extNum.ToString() + ".png";
         }
 
-        public static string DebugFileHeader()
-        {
-            return "Time\tError Type\tMessage\tStack Trace";
-        }
+        public const string personalSettingsXmlFile = "personal_debug_settings.xml";
+        public bool personalSettingsLoaded = false;
     }
+
+
 
     public class AssertDateStamp
     {
@@ -113,21 +144,20 @@ namespace NG
         }
     }
 
-    // let's take this and extend it fully
-    //http://wiki.unity3d.com/index.php/DebugConsole
-    //http://zaxisgames.blogspot.com/2012/03/let-me-debug-in-your-gui.html
-    //
+
 
     /// <summary>
-    /// Replacement class that "extends" UnityEngine.Assertions
-    /// Is not executed if not running in the editor and not a debug build
+    /// Replacement class that "extends" UnityEngine.Assertions.
+    /// Is not executed if not running in the editor and not a debug build.
     /// </summary>
     public class Assert
     {
         private static bool ShouldExecute()
         {
+            AssertDebugConfigSerialized.LoadSettings();
+
 #pragma warning disable 0162
-            if (AssertDebugConfig.masterDisable || AssertDebugConfig.assertDisable)
+            if (AssertDebugConfig.instance.masterDisable || AssertDebugConfig.instance.assertDisable)
                 return false;
 
 #if UNITY_EDITOR
@@ -135,7 +165,7 @@ namespace NG
             return true;
 #endif
 
-            if (!UnityEngine.Debug.isDebugBuild)
+            if (!UnityEngine.Debug.isDebugBuild && AssertDebugConfig.instance.runInDebugBuildOnly)
                 return false;
 
             RegisterLogCallBack();
@@ -162,7 +192,7 @@ namespace NG
 
 
         /// <summary>
-        /// Asserts that two values are equal and disables the referenced MonoBehaviour
+        /// Asserts that two values are equal and disables the referenced MonoBehaviour.
         /// </summary>
         /// <param name="monoBehaviour">The class instance that will be disabled on failure</param>
         /// <returns>true if values are equal</returns>
@@ -417,16 +447,18 @@ namespace NG
 
 
     /// <summary>
-    /// Replacement for Unity's debug so we can just shut it off for production
+    /// Replacement for Unity's debug so we can just shut it off for production.
+    /// Is not executed if not running in the editor and not a debug build.
     /// </summary>
-        public class Debug
+    public class Debug
     {
-        private static DebugWarningLevel warningLevel = AssertDebugConfig.debugLogWarningLevel;
+        private static DebugWarningLevel warningLevel = AssertDebugConfig.instance.debugLogWarningLevel;
         private static bool ShouldExecute()
         {
+            AssertDebugConfigSerialized.LoadSettings();
 #pragma warning disable 0162
-            if (AssertDebugConfig.masterDisable || 
-                AssertDebugConfig.debugLogWarningLevel == DebugWarningLevel.none)
+            if (AssertDebugConfig.instance.masterDisable || 
+                AssertDebugConfig.instance.debugLogWarningLevel == DebugWarningLevel.none)
                 return false;
 
 #if UNITY_EDITOR
@@ -434,7 +466,7 @@ namespace NG
             return true;
 #endif
 
-            if (!UnityEngine.Debug.isDebugBuild)
+            if (!UnityEngine.Debug.isDebugBuild && AssertDebugConfig.instance.runInDebugBuildOnly)
                 return false;
 
             RegisterLogCallBack();
@@ -518,17 +550,17 @@ namespace NG
 #pragma warning disable 0162
             if (classCaller.GetType() == typeof(Assert).GetType())
             {
-                if (!AssertDebugConfig.shouldAssertDoFailure)
+                if (!AssertDebugConfig.instance.shouldAssertDoFailure)
                     return;
 
-                if (AssertDebugConfig.logToFileCondition == LogToFileCondition.assertFailureOnly ||
-                    AssertDebugConfig.logToFileCondition == LogToFileCondition.allFailureOnly)
+                if (AssertDebugConfig.instance.logToFileCondition == LogToFileCondition.assertFailureOnly ||
+                    AssertDebugConfig.instance.logToFileCondition == LogToFileCondition.allFailureOnly)
                 {
-                    DebugToFile.WriteToLog(AssertDebugConfig.GetDebugFileName());
+                    DebugToFile.WriteToLog(AssertDebugConfig.instance.GetDebugFileName());
                 }
                 
 
-                switch (AssertDebugConfig.assertFailureReaction)
+                switch (AssertDebugConfig.instance.assertFailureReaction)
                 {
                     case FailureReaction.pause:
 #if UNITY_EDITOR
@@ -552,16 +584,16 @@ namespace NG
 
             if (typeof(Debug).GetType() == classCaller.GetType())
             {
-                if (!AssertDebugConfig.shouldLogErrorDoFailure)
+                if (!AssertDebugConfig.instance.shouldLogErrorDoFailure)
                     return;
 
-                if (AssertDebugConfig.logToFileCondition == LogToFileCondition.debugErrorOnly ||
-                    AssertDebugConfig.logToFileCondition == LogToFileCondition.allFailureOnly)
+                if (AssertDebugConfig.instance.logToFileCondition == LogToFileCondition.debugErrorOnly ||
+                    AssertDebugConfig.instance.logToFileCondition == LogToFileCondition.allFailureOnly)
                 {
-                    DebugToFile.WriteToLog(AssertDebugConfig.GetDebugFileName());
+                    DebugToFile.WriteToLog(AssertDebugConfig.instance.GetDebugFileName());
                 }
 
-                switch (AssertDebugConfig.debugReaction)
+                switch (AssertDebugConfig.instance.debugReaction)
                 {
                     case FailureReaction.pause:
 #if UNITY_EDITOR
@@ -582,9 +614,12 @@ namespace NG
                         return;
                 }
             }
+
+            if (AssertDebugConfig.instance.takeScreenShot)
+                Application.CaptureScreenshot(AssertDebugConfig.instance.GetScreenShotFileName());
 #pragma warning restore
 
-            Application.CaptureScreenshot(AssertDebugConfig.GetScreenShotFileName());
+
         }
     }
 
@@ -632,7 +667,7 @@ namespace NG
             using (StreamWriter sw = new StreamWriter(fileName))
             {
                 if (writeHeader)
-                    sw.WriteLine(AssertDebugConfig.DebugFileHeader());
+                    sw.WriteLine(AssertDebugConfig.instance.debugFileHeader);
 
                 foreach (string s in dOutDebugAssert)
                 {
@@ -664,7 +699,7 @@ namespace NG
             using (StreamWriter sw = new StreamWriter(fileName , true))
             {
                 if (writeHeader)
-                    sw.WriteLine(AssertDebugConfig.DebugFileHeader());
+                    sw.WriteLine(AssertDebugConfig.instance.debugFileHeader);
 
                 sw.WriteLine(line);
                 sw.Close();
@@ -695,7 +730,7 @@ namespace NG
         {
 #pragma warning disable 0162
 #pragma warning disable 0429
-            if (AssertDebugConfig.logToFileCondition == LogToFileCondition.none)
+            if (AssertDebugConfig.instance.logToFileCondition == LogToFileCondition.none)
                 return;
 
             string line = AssertDateStamp.LogEntryTime() + "\t" +
@@ -705,26 +740,26 @@ namespace NG
 
             if (type == LogType.Assert)
             {
-                if (AssertDebugConfig.logToFileCondition == LogToFileCondition.all ||
-                    AssertDebugConfig.logToFileCondition == LogToFileCondition.assertOnly)
+                if (AssertDebugConfig.instance.logToFileCondition == LogToFileCondition.all ||
+                    AssertDebugConfig.instance.logToFileCondition == LogToFileCondition.assertOnly)
                 {
-                    DebugToFile.WriteLineToLogAssertDebug(AssertDebugConfig.GetDebugFileName(), line);
+                    DebugToFile.WriteLineToLogAssertDebug(AssertDebugConfig.instance.GetDebugFileName(), line);
                 }
-                else if (AssertDebugConfig.logToFileCondition == LogToFileCondition.assertFailureOnly ||
-                         AssertDebugConfig.logToFileCondition == LogToFileCondition.allFailureOnly)
+                else if (AssertDebugConfig.instance.logToFileCondition == LogToFileCondition.assertFailureOnly ||
+                         AssertDebugConfig.instance.logToFileCondition == LogToFileCondition.allFailureOnly)
                 {
                     DebugToFile.dOutDebugAssert.Add(line);
                 }
             }
             else
             {
-                if (AssertDebugConfig.logToFileCondition == LogToFileCondition.all ||
-                    AssertDebugConfig.logToFileCondition == LogToFileCondition.assertOnly)
+                if (AssertDebugConfig.instance.logToFileCondition == LogToFileCondition.all ||
+                    AssertDebugConfig.instance.logToFileCondition == LogToFileCondition.assertOnly)
                 {
-                    DebugToFile.WriteLineToLogAssertDebug(AssertDebugConfig.GetDebugFileName(), line);
+                    DebugToFile.WriteLineToLogAssertDebug(AssertDebugConfig.instance.GetDebugFileName(), line);
                 }
-                else if (AssertDebugConfig.logToFileCondition == LogToFileCondition.debugErrorOnly ||
-                         AssertDebugConfig.logToFileCondition == LogToFileCondition.allFailureOnly)
+                else if (AssertDebugConfig.instance.logToFileCondition == LogToFileCondition.debugErrorOnly ||
+                         AssertDebugConfig.instance.logToFileCondition == LogToFileCondition.allFailureOnly)
                 {
                     DebugToFile.dOutDebugAssert.Add(line);
                 }
