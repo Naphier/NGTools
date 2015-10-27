@@ -59,6 +59,7 @@ public class DebugConsole : MonoBehaviour
         CreateEventSystem();
         CreateGUI();
         MakeButtons();
+        DebugConsole.instance.isVisible = false;
     }
 
     void CreateEventSystem()
@@ -298,11 +299,12 @@ public class DebugConsole : MonoBehaviour
 
     IEnumerator TakeScreenshot(string pathfile)
     {
+        bool wasVisible = DebugConsole.instance.isVisible;
         DebugConsole.instance.isVisible = false;
         yield return new WaitForEndOfFrame();
         Application.CaptureScreenshot(pathfile);
         yield return new WaitForEndOfFrame();
-        DebugConsole.instance.isVisible = true;
+        DebugConsole.instance.isVisible = wasVisible;
 
         if (ScreenshotButtonCallback != null)
             ScreenshotButtonCallback();
