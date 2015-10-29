@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEditor;
-using UnityEditor.AnimatedValues;
+using UnityEditor.AnimatedValues; //used for "Special Operations" fade group
 
 [CustomEditor(typeof(Transform))]
 [CanEditMultipleObjects]
