@@ -1,5 +1,5 @@
 using UnityEngine;
-using System.Collections;
+using NG.AssertDebug;
 
 public class TestLogMessageReceivedCallback : MonoBehaviour
 {
@@ -10,10 +10,10 @@ public class TestLogMessageReceivedCallback : MonoBehaviour
         go = gameObject;
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            NG.Debug.Log("yo!");
-            NG.Debug.LogError("error test");
-            NG.Assert.IsNotNull(go , null);
-            NG.Assert.AreEqual(1, 2);
+            NGDebug.Log("yo!");
+            NGDebug.LogError("error test");
+            Assert.IsNotNull(go , null);
+            Assert.AreEqual(1, 2);
         }
     }
 }

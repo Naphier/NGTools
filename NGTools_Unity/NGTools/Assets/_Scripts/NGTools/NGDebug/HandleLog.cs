@@ -1,5 +1,5 @@
 using UnityEngine;
-using NG;
+using NG.AssertDebug;
 /// <summary>
 /// Handle log messages callbacks for NG.Assert and NG.Debug
 /// Use this script as the bridge between NGAssertDebug and NGDebugConsole
