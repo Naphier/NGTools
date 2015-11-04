@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEditor;
 
 [CustomEditor(typeof(ShowLocalAxis))]
-public class ShowRotatedInspector : Editor
+public class ShowLocalAxisInspector : Editor
 {
     public override void OnInspectorGUI()
     {
