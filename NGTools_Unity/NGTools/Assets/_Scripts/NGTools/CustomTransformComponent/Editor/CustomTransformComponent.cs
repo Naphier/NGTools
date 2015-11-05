@@ -4,7 +4,7 @@ using UnityEditor.AnimatedValues; //used for "Special Operations" fade group
 
 [CustomEditor(typeof(Transform))]
 [CanEditMultipleObjects]
-public class MyTransformComponent : Editor
+public class CustomTransformComponent : Editor
 {
     private Transform _transform;
     private AnimBool m_showExtraFields;
@@ -37,7 +37,7 @@ public class MyTransformComponent : Editor
         m_showExtraFields.target = EditorGUILayout.ToggleLeft("Special operations", m_showExtraFields.target);
         if (EditorGUILayout.BeginFadeGroup(m_showExtraFields.faded))
         {
-            AlignmentButton();
+            AlignmentInspector();
 
             EditorGUILayout.Space();
             EditorGUILayout.Space();
@@ -96,7 +96,7 @@ public class MyTransformComponent : Editor
     }
 
 
-    private bool showLoxalAxisToggle = false;
+    private bool showLocalAxisToggle = false;
     private ShowLocalAxis showLocalAxis;
     private void ShowLocalAxisComponentToggle()
     {    
@@ -104,17 +104,17 @@ public class MyTransformComponent : Editor
 
         
         if (showLocalAxis == null)
-            showLoxalAxisToggle = false;
+            showLocalAxisToggle = false;
         else
-            showLoxalAxisToggle = true;
+            showLocalAxisToggle = true;
 
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.LabelField("Show local rotation handles", EditorStyles.boldLabel);
         EditorGUI.BeginChangeCheck();
-        showLoxalAxisToggle = EditorGUILayout.ToggleLeft((showLoxalAxisToggle ? "on" : "off" ), showLoxalAxisToggle);
+        showLocalAxisToggle = EditorGUILayout.ToggleLeft((showLocalAxisToggle ? "on" : "off" ), showLocalAxisToggle);
         if (EditorGUI.EndChangeCheck())
         {
-            if (showLoxalAxisToggle == true)
+            if (showLocalAxisToggle == true)
             {
                 showLocalAxis = _transform.gameObject.AddComponent<ShowLocalAxis>();
                 int componentCount = _transform.GetComponents<Component>().Length;
@@ -134,23 +134,15 @@ public class MyTransformComponent : Editor
 
 
     public enum AlignToType { lastSelected, firstSelected }
+    public enum AxisFlag { X = 1, Y = 2, Z = 4 }
+
     public AlignToType alignTo = AlignToType.lastSelected;
-
-    
-    public enum AxisFlag
-    {
-        X = 1,
-        Y = 2,
-        Z = 4
-    }
-    
-    public AxisFlag alignAxis;
-
-    private void AlignmentButton()
+    public AxisFlag alignmentAxis;
+    private void AlignmentInspector()
     {
         EditorGUILayout.LabelField("Alignment", EditorStyles.boldLabel);
         alignTo = (AlignToType)EditorGUILayout.EnumPopup("Align to", alignTo);
-        alignAxis = (AxisFlag)EditorGUILayout.EnumMaskField("Axis", alignAxis);
+        alignmentAxis = (AxisFlag)EditorGUILayout.EnumMaskField("Axis", alignmentAxis);
 
         string buttonLabel = "Select another object to align to";
         bool enableButton = false;
@@ -171,7 +163,7 @@ public class MyTransformComponent : Editor
         GUI.enabled = enableButton;
         if (GUILayout.Button(buttonLabel))
         {
-            AlignTo(alignTo, alignAxis);
+            AlignTo(alignTo, alignmentAxis);
         }
         GUI.enabled = true;
     }
@@ -199,7 +191,7 @@ public class MyTransformComponent : Editor
                 temp.y = selectedTransforms[targetIndex].position.y;
 
             if ((axis & AxisFlag.Z) == AxisFlag.Z)
-                temp.y = selectedTransforms[targetIndex].position.z;
+                temp.z = selectedTransforms[targetIndex].position.z;
 
             Undo.RecordObject(selectedTransforms[i], selectedTransforms[i].name +  " aligned to " + selectedTransforms[targetIndex].name);
             selectedTransforms[i].position = temp;
@@ -208,11 +200,11 @@ public class MyTransformComponent : Editor
 
 
 
-    public AxisFlag axisFlag;
+    public AxisFlag rotationAxisFlag;
     private void RandomRotateButton()
     {
         EditorGUILayout.LabelField("Random Rotation", EditorStyles.boldLabel);
-        axisFlag = (AxisFlag)EditorGUILayout.EnumMaskField("Rotation Axis", axisFlag);
+        rotationAxisFlag = (AxisFlag)EditorGUILayout.EnumMaskField("Rotation Axis", rotationAxisFlag);
 
         Transform[] selectedTransforms = Selection.transforms;
 
@@ -222,7 +214,7 @@ public class MyTransformComponent : Editor
 
         if (GUILayout.Button(label))
         {
-            RandomRotate(axisFlag , selectedTransforms);
+            RandomRotate(rotationAxisFlag , selectedTransforms);
         }
     }
 
@@ -252,13 +244,13 @@ public class MyTransformComponent : Editor
     }
 
 
-    private AxisFlag scaleAxis;
+    private AxisFlag scaleAxisFlag;
     private float minScale, maxScale;
     private bool scaleSame = true;
     private void RandomScaleButton()
     {
         EditorGUILayout.LabelField("Random Scale (local)", EditorStyles.boldLabel);
-        scaleAxis = (AxisFlag)EditorGUILayout.EnumMaskField("Scale Axis", scaleAxis);
+        scaleAxisFlag = (AxisFlag)EditorGUILayout.EnumMaskField("Scale Axis", scaleAxisFlag);
         scaleSame = EditorGUILayout.ToggleLeft("Scale same", scaleSame);
 
         EditorGUILayout.BeginHorizontal();
@@ -273,7 +265,7 @@ public class MyTransformComponent : Editor
 
         if (GUILayout.Button(btnLabel))
         {
-            RandomScale(scaleAxis, selectedTransforms, scaleSame);
+            RandomScale(scaleAxisFlag, selectedTransforms, scaleSame);
         }
     }
 
@@ -347,10 +339,5 @@ public class MyTransformComponent : Editor
             Undo.RecordObject(t[i], "Random position " + t[i].name);
             t[i].position = temp;
         }
-    }
-
-    public void SetRepaint()
-    {
-        Repaint();
     }
 }
