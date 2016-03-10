@@ -71,7 +71,6 @@ public class DebugConsole : MonoBehaviour
             DontDestroyOnLoad(go);
             go.AddComponent<EventSystem>();
             go.AddComponent<StandaloneInputModule>();
-            go.AddComponent<TouchInputModule>();
         }
     }
 

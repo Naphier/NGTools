@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -59,7 +60,7 @@ public class SimpleMovement : MonoBehaviour
     IEnumerator LoadNextLevelCo()
     {
         isLoading = true;
-        loadLevel = Application.LoadLevelAdditiveAsync(loadedLevel);
+        loadLevel = SceneManager.LoadSceneAsync(loadedLevel, LoadSceneMode.Additive);
         yield return loadLevel;
     }
 
