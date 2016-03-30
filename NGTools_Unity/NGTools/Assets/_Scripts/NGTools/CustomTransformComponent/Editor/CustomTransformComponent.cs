@@ -59,9 +59,21 @@ public class CustomTransformComponent : Editor
 
     private void StandardTransformInspector()
     {
-        _transform.localPosition = EditorGUILayout.Vector3Field("Position", _transform.localPosition);
-        _transform.localEulerAngles = EditorGUILayout.Vector3Field("Euler Rotation", _transform.localEulerAngles);
-        _transform.localScale = EditorGUILayout.Vector3Field("Scale", _transform.localScale);
+        EditorGUI.BeginChangeCheck();
+        Vector3 localPosition = EditorGUILayout.Vector3Field("Position", _transform.localPosition);
+        if (EditorGUI.EndChangeCheck())
+            _transform.localPosition = localPosition;
+
+        EditorGUI.BeginChangeCheck();
+        Vector3 localEulerAngles = EditorGUILayout.Vector3Field("Euler Rotation", _transform.localEulerAngles);
+        if (EditorGUI.EndChangeCheck())
+            _transform.localEulerAngles = localEulerAngles;
+
+        EditorGUI.BeginChangeCheck();
+        Vector3 localScale = EditorGUILayout.Vector3Field("Scale", _transform.localScale);
+
+        if (EditorGUI.EndChangeCheck())
+            _transform.localScale = localScale;
     }
 
 
