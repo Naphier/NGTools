@@ -1,3 +1,5 @@
+using System.Linq;
+
 namespace System.Collections.Generic
 {
     public static class CollectionsExtensions
@@ -7,41 +9,70 @@ namespace System.Collections.Generic
             list.AddRange(elements);
         }
 
-        public static string ExtendedToString<T>(this List<T> list)
+        public const string NULL_LIST = "NULL List";
+        public const string EMPTY_LIST = "EMPTY List";
+        public static string ExtendedToString<T>(this List<T> list, string delimiter = "\n")
         {
             if (list == null)
-                return "NULL List";
+                return NULL_LIST;
 
             if (list.Count <= 0)
-                return "EMPTY List";
+                return EMPTY_LIST;
 
             string s = "";
-            foreach (var item in list)
+            for (int i = 0; i < list.Count; i++)
             {
-                s += item.ToString() + "\n";
+                s += list[i].ToString();
+                if (i < list.Count - 1)
+                    s += delimiter;
             }
 
             return s;
         }
 
-        public static string ExtendedToString<TKey, TValue>(this Dictionary<TKey, TValue> dictionary)
+
+        public const string NULL_DICTIONARY = "NULL Dictionary";
+        public const string EMPTY_DICTIONARY = "EMPTY Dictionary";
+        public static string ExtendedToString<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, string delimiter = "\n")
         {
             if (dictionary == null)
-                return "NULL dictionary";
+                return NULL_DICTIONARY;
 
             if (dictionary.Count <= 0)
-                return "EMPTY dictionary";
+                return EMPTY_DICTIONARY;
 
             string s = "";
+            int index = 0;
+            int count = dictionary.Count;
+
             foreach (var item in dictionary)
             {
-                s += string.Format("{0}: {1}\n",
+                s += string.Format("{0}: {1}{2}",
                     item.Key,
-                    (item.Value == null ? "NULL" : item.Value.ToString())
+                    (item.Value == null ? "NULL" : item.Value.ToString()),
+                    (index < count - 1 ? delimiter : "")
                     );
+                index++;
             }
 
             return s;
+        }
+
+        public static T Random<T>(this IEnumerable<T> enumerable)
+        {
+            return enumerable.OrderBy(e => Guid.NewGuid()).FirstOrDefault();
+        }
+
+
+        public static IEnumerable<T> RandomSelection<T>(this IEnumerable<T> enumerable, int count)
+        {
+            count = enumerable.Count() < count ? enumerable.Count() : count;
+            return enumerable.OrderBy(e => Guid.NewGuid()).Take(count);
+        }
+
+        public static bool IsNullOrEmpty<T>(this IEnumerable<T> enumerable)
+        {
+            return enumerable == null || !enumerable.Any();
         }
     }
 }

@@ -4,12 +4,12 @@ namespace System
     {
         /// <summary>
         /// Converts string to enum of type T. T must be an enum
-        /// otherwise an exception is thrown.
+        /// otherwise a 'NotSupportedException' exception is thrown.
         /// </summary>
-        public static T ToEnum<T>(this string value) where T : new()
+        public static T ToEnum<T>(this string value) where T : struct, IConvertible
         {
             if (!typeof(T).IsEnum)
-                throw new NotSupportedException("T must be an Enum");
+                throw new NotSupportedException("Must be an Enum! type: " + typeof(T).Name);
 
             try
             {

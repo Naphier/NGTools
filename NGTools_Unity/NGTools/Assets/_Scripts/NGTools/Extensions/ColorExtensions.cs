@@ -3,8 +3,10 @@ using System.Globalization;
 
 namespace UnityEngine
 {
-    public class ColorExtensions
+    public static class ColorExtensions
     {
+        public static bool debugLogMessagesOn = true;
+
         public static string HexString(Color aColor)
         {
             return HexString((Color32)aColor, false);
@@ -38,46 +40,73 @@ namespace UnityEngine
             {
                 try
                 {
+                    int commaCount = 0;
+                    foreach (char c in aStr)
+                    {
+                        if (c == ',') commaCount++;
+                    }
+
                     if (aStr.Substring(0, 1) == "#")
                     {  // #FFFFFF format
                         string str = aStr.Substring(1, aStr.Length - 1);
-                        clr.r = (float)System.Int32.Parse(str.Substring(0, 2),
+                        clr.r = int.Parse(str.Substring(0, 2),
                             NumberStyles.AllowHexSpecifier) / 255.0f;
-                        clr.g = (float)System.Int32.Parse(str.Substring(2, 2),
+                        clr.g = int.Parse(str.Substring(2, 2),
                             NumberStyles.AllowHexSpecifier) / 255.0f;
-                        clr.b = (float)System.Int32.Parse(str.Substring(4, 2),
+                        clr.b = int.Parse(str.Substring(4, 2),
                             NumberStyles.AllowHexSpecifier) / 255.0f;
-                        if (str.Length == 8) clr.a = System.Int32.Parse(str.Substring(6, 2),
+                        if (str.Length == 8)
+                        {
+                            clr.a = int.Parse(str.Substring(6, 2),
                                NumberStyles.AllowHexSpecifier) / 255.0f;
+                        }
                         else clr.a = 1.0f;
                     }
-                    else if (aStr.IndexOf(",", 0) >= 0)
+                    else if (commaCount >= 2 && commaCount <= 3 && aStr.Length >= 2 * commaCount + 1)
                     {  // 0.3, 1.0, 0.2 format
                         int p0 = 0;
                         int p1 = 0;
                         int c = 0;
                         p1 = aStr.IndexOf(",", p0);
+                        
+                        if (p1 <= 0)
+                            throw new FormatException();
+
                         while (p1 > p0 && c < 4)
                         {
-                            clr[c++] = float.Parse(aStr.Substring(p0, p1 - p0));
+                            float value = float.Parse(aStr.Substring(p0, p1 - p0));
+                            value = Mathf.Clamp(value, 0, 1);
+                            clr[c++] = value;
                             p0 = p1 + 1;
                             if (p0 < aStr.Length) p1 = aStr.IndexOf(",", p0);
                             if (p1 < 0) p1 = aStr.Length;
                         }
                         if (c < 4) clr.a = 1.0f;
                     }
+                    else
+                        throw new FormatException();
                 }
                 catch (Exception e)
                 {
-                    Debug.Log("Could not convert " + aStr + " to Color. " + e);
-                    return new Color(0, 0, 0, 0);
+                    if (debugLogMessagesOn)
+                        Debug.LogError("MakeColor could not convert " + aStr + " to Color. " + e);
+                    return Color.magenta;
                 }
             }
+            else
+                return Color.magenta;
+
             return clr;
         }
 
+        // HSB calculations are not quite right. 
+        // Values are typically h:0-360, s:0-100, b:0-100, and a:0-1
+        // Extinguished until I actually need to use them.
+        /*
         public static Vector3 MakeHSB(Color c)
         {
+            c = c.Clamp();
+
             float minValue = Mathf.Min(c.r, Mathf.Min(c.g, c.b));
             float maxValue = Mathf.Max(c.r, Mathf.Max(c.g, c.b));
             float delta = maxValue - minValue;
@@ -115,6 +144,8 @@ namespace UnityEngine
 
         public static Vector4 MakeHSBA(Color c)
         {
+            c = c.Clamp();
+
             float minValue = Mathf.Min(c.r, Mathf.Min(c.g, c.b));
             float maxValue = Mathf.Max(c.r, Mathf.Max(c.g, c.b));
             float delta = maxValue - minValue;
@@ -211,6 +242,22 @@ namespace UnityEngine
                 }
             }
             return new Color(r, g, b, hsba.w);
+        }
+        */
+        public static Color Clamp(this Color c)
+        {
+            for (int i = 0; i <= 3; i++)
+            {
+                if (float.IsNaN(c[i]) ||
+                    float.IsNegativeInfinity(c[i]))
+                    c[i] = 0;
+                else if (float.IsPositiveInfinity(c[i]))
+                    c[i] = 1;
+                else
+                    c[i] = Mathf.Clamp(c[i], 0, 1);
+            }
+
+            return c;
         }
     }
 }
