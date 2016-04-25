@@ -1,5 +1,7 @@
 using UnityEngine;
 using NG.AssertDebug;
+
+using LogType = UnityEngine.LogType;
 /// <summary>
 /// Handle log messages callbacks for NG.Assert and NG.Debug
 /// Use this script as the bridge between NGAssertDebug and NGDebugConsole

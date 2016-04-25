@@ -106,7 +106,7 @@ namespace NG.AssertDebug
             return line;
         }
 
-        public static void HandleLogCallback(string logString, string stackTrace, LogType type)
+        public static void HandleLogCallback(string logString, string stackTrace, UnityEngine.LogType type)
         {
 #pragma warning disable 0162
 #pragma warning disable 0429
@@ -118,7 +118,7 @@ namespace NG.AssertDebug
                             DebugToFile.CleanLine(logString) + "\t" +
                             DebugToFile.CleanLine(stackTrace);
 
-            if (type == LogType.Assert)
+            if (type == UnityEngine.LogType.Assert)
             {
                 if (AssertDebugConfig.instance.logToFileCondition == LogToFileCondition.all ||
                     AssertDebugConfig.instance.logToFileCondition == LogToFileCondition.assertOnly)

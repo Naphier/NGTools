@@ -25,7 +25,7 @@ namespace NG.AssertDebug
                 {
                     case FailureReaction.pause:
 #if UNITY_EDITOR
-                        Debug.Break();
+                        UnityEngine.Debug.Break();
 #elif NG_RIGIDBODY_EXTENSION
                         RigidbodyPauser.PauseAll();
 #endif
@@ -33,7 +33,7 @@ namespace NG.AssertDebug
                     case FailureReaction.kill:
                         Application.Quit();
 #if UNITY_EDITOR
-                        Debug.Break();
+                        UnityEngine.Debug.Break();
 #endif
                         break;
                     case FailureReaction.none:
@@ -58,7 +58,7 @@ namespace NG.AssertDebug
                 {
                     case FailureReaction.pause:
 #if UNITY_EDITOR
-                        Debug.Break();
+                        UnityEngine.Debug.Break();
 #elif NG_RIGIDBODY_EXTENSION
                         RigidbodyPauser.PauseAll();
 #endif
@@ -66,7 +66,7 @@ namespace NG.AssertDebug
                     case FailureReaction.kill:
                         Application.Quit();
 #if UNITY_EDITOR
-                        Debug.Break();
+                        UnityEngine.Debug.Break();
 #endif
                         break;
                     case FailureReaction.none:

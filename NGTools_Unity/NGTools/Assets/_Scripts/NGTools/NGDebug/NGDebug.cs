@@ -21,7 +21,7 @@ namespace NG.AssertDebug
             return true;
 #endif
 
-            if (!Debug.isDebugBuild && AssertDebugConfig.instance.runInDebugBuildOnly)
+            if (!UnityEngine.Debug.isDebugBuild && AssertDebugConfig.instance.runInDebugBuildOnly)
                 return false;
 
             RegisterLogCallBack();
