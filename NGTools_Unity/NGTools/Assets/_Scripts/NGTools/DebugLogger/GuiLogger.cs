@@ -2,7 +2,7 @@ using System;
 using System.Diagnostics;
 using UnityEngine;
 
-namespace NG
+namespace NG.Logging
 {
     public class GuiLogger : ILogger
     {

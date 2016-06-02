@@ -1,5 +1,6 @@
 using UnityEngine;
-namespace NG
+
+namespace NG.Logging
 {
     public enum FileLogPathType { Custom, ApplicationDataPath, PersistentDataPath }
 

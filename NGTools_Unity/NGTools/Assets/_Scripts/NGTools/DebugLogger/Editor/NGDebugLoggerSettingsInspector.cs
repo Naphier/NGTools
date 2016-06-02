@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEditor;
 
-namespace NG
+namespace NG.Logging
 {
 
     [CustomEditor(typeof(NGDebugLoggerSettings))]

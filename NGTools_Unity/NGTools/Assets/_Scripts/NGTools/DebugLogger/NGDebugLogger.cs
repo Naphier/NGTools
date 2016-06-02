@@ -1,13 +1,13 @@
 using System;
 using UnityEngine;
 
-namespace NG
+
+public enum LogDestinationType { editorConsole = 1, file = 2, guiConsole = 4 }
+public enum DisableContext { onError = 1, onException = 2, onFailedAssertion = 4 }
+public enum NGLogType { Assert = 1, Error = 2, Exception = 4, Log = 8, Warning = 16 }
+
+namespace NG.Logging
 {
-    public enum LogDestinationType { editorConsole = 1, file = 2, guiConsole = 4}
-    public enum DisableContext { onError = 1, onException = 2, onFailedAssertion = 4}
-
-    public enum NGLogType { Assert = 1, Error = 2, Exception = 4, Log = 8, Warning = 16}
-
     public static class Debug
     {
         public static NGLogType noFilter

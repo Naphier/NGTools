@@ -3,7 +3,7 @@ using System.IO;
 using System.Diagnostics;
 using UnityEngine;
 
-namespace NG
+namespace NG.Logging
 {
     public class FileLogger : ILogger
     {

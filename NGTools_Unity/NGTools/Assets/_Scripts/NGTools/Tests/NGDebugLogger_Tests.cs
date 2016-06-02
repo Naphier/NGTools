@@ -1,7 +1,6 @@
 using UnityEngine;
 using System.Collections;
-using NG;
-using Debug = NG.Debug;
+using Debug = NG.Logging.Debug;
 
 public class NGDebugLogger_Tests : MonoBehaviour
 {
@@ -17,7 +16,7 @@ public class NGDebugLogger_Tests : MonoBehaviour
             );
 
         UnityEngine.Debug.LogFormat(
-            "shouldLogToFile: {0}" , 
+            "shouldLogToFile: {0}",
             Debug.shouldLogToFile);
 
         string consoleFilters = "ShouldLogToConsole:";
@@ -72,13 +71,13 @@ public class NGDebugLogger_Tests : MonoBehaviour
         {
             Debug.LogException(new System.Exception());
         }
-        catch (System.Exception){}
+        catch (System.Exception) { }
 
         try
         {
             Debug.LogException(new System.Exception(), new GameObject("exception context object"));
         }
-        catch (System.Exception){}
+        catch (System.Exception) { }
 
         Debug.AttemptDisableContext(DisableContext.onError, this);
 

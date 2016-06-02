@@ -1,6 +1,6 @@
 using UnityEditor;
 
-namespace NG
+namespace NG.Logging
 {
     public class NGDebugLoggerMenu : Editor
     {

@@ -169,6 +169,9 @@ namespace NG
             {
                 for (int i = 0; i < textGameObjects.Count; i++)
                 {
+                    if (textGameObjects[i] == null)
+                        continue;
+
                     if (textGameObjects[i].name == "0")
                         Destroy(textGameObjects[i]);
                     else

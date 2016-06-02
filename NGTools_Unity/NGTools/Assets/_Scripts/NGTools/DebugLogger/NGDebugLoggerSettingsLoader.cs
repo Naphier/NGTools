@@ -6,7 +6,7 @@ using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
-namespace NG
+namespace NG.Logging
 {
     public class NGDebugLoggerSettingsLoader
     {
