@@ -57,4 +57,21 @@ public static class StringExtension
 
         return value.Length <= maxLength ? value : value.Substring(0, maxLength);
     }
+
+    public static bool Contains(this string[] array, string valueToCheck, bool ignoreCase = true)
+    {
+        System.StringComparison comparison = 
+            (ignoreCase ?
+            System.StringComparison.OrdinalIgnoreCase :
+            System.StringComparison.Ordinal);
+
+
+        for (int i = 0; i < array.Length; i++)
+        {
+            if (string.Equals(array[i], valueToCheck, comparison))
+                return true;
+        }
+
+        return false;
+    }
 }
