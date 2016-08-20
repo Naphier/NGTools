@@ -6,8 +6,6 @@ public class ShowLocalAxisInspector : Editor
 {
     public override void OnInspectorGUI()
     {
-        //base.OnInspectorGUI();
-
         base.DrawDefaultInspector();
 
         ShowLocalAxis showRotated = (ShowLocalAxis)target;
