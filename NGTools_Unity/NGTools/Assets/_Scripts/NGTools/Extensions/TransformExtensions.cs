@@ -1,7 +1,7 @@
 namespace UnityEngine
 {
     /// <summary>
-    /// Extansioon methods for Vector3 modification and easy transform vector3 modifications.
+    /// Extension methods for Vector3 modification and easy transform vector3 modifications.
     /// Each method has optional parameters so you can call them in your preferred order and/or
     /// omit parameters you don't want to use. For example, vector3.SetValues(z:10) will set 
     /// only the z value on the returned Vector3.

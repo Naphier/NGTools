@@ -36,7 +36,7 @@ public class MultiLerp_Test : MonoBehaviour
     Vector3 start = new Vector3(-8, 0, 0);
     Vector3 end = new Vector3(8, 0, 0);
     float timer = 0f;
-    bool runUpdate = true;
+    //bool runUpdate = true;
     void Update()
     {
         /*

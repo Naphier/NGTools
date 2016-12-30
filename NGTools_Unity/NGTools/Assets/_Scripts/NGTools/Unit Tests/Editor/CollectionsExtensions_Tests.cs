@@ -39,7 +39,7 @@ namespace System.Collections.Generic
             list.Add("a");
             list.Add("b");
             string expected = "a\nb";
-            string actual = list.ExtendedToString();
+            string actual = list.ToStringDelimited();
             Assert.AreEqual(expected, actual);
         }
 
@@ -51,7 +51,7 @@ namespace System.Collections.Generic
             list.Add("b");
             string delimiter = ",";
             string expected = "a" + delimiter + "b";
-            string actual = list.ExtendedToString(delimiter);
+            string actual = list.ToStringDelimited(delimiter);
             Assert.AreEqual(expected, actual);
         }
 
@@ -62,7 +62,7 @@ namespace System.Collections.Generic
             list.Add("a");
             list.Add("b");
             string expected = "ab";
-            string actual = list.ExtendedToString(null);
+            string actual = list.ToStringDelimited(null);
             Assert.AreEqual(expected, actual);
         }
 
@@ -72,7 +72,7 @@ namespace System.Collections.Generic
         {
             List<string> list = null;
             string expected = CollectionsExtensions.NULL_LIST;
-            string actual = list.ExtendedToString();
+            string actual = list.ToStringDelimited();
             Assert.AreEqual(expected, actual);
         }
 
@@ -81,7 +81,7 @@ namespace System.Collections.Generic
         {
             List<string> list = new List<string>();
             string expected = CollectionsExtensions.EMPTY_LIST;
-            string actual = list.ExtendedToString();
+            string actual = list.ToStringDelimited();
             Assert.AreEqual(expected, actual);
         }
         #endregion
@@ -95,7 +95,7 @@ namespace System.Collections.Generic
             dict.Add("a", "1");
             dict.Add("b", "2");
             string expected = "a: 1\nb: 2";
-            string actual = dict.ExtendedToString();
+            string actual = dict.ToStringDelimited();
             Assert.AreEqual(expected, actual);
         }
 
@@ -107,7 +107,7 @@ namespace System.Collections.Generic
             dict.Add("b", "2");
             string delimiter = ",";
             string expected = "a: 1" + delimiter + "b: 2";
-            string actual = dict.ExtendedToString(delimiter);
+            string actual = dict.ToStringDelimited(delimiter);
             Assert.AreEqual(expected, actual);
         }
 
@@ -118,7 +118,7 @@ namespace System.Collections.Generic
             dict.Add("a", "1");
             dict.Add("b", "2");
             string expected = "a: 1b: 2";
-            string actual = dict.ExtendedToString(null);
+            string actual = dict.ToStringDelimited(null);
             Assert.AreEqual(expected, actual);
         }
 
@@ -128,7 +128,7 @@ namespace System.Collections.Generic
         {
             Dictionary<string, string> dict = null;
             string expected = CollectionsExtensions.NULL_DICTIONARY;
-            string actual = dict.ExtendedToString();
+            string actual = dict.ToStringDelimited();
             Assert.AreEqual(expected, actual);
         }
 
@@ -137,7 +137,7 @@ namespace System.Collections.Generic
         {
             Dictionary<string, string> dict = new Dictionary<string, string>();
             string expected = CollectionsExtensions.EMPTY_DICTIONARY;
-            string actual = dict.ExtendedToString();
+            string actual = dict.ToStringDelimited();
             Assert.AreEqual(expected, actual);
         }
         #endregion
@@ -157,7 +157,7 @@ namespace System.Collections.Generic
             int count1 = 0;
             for (int i = 0; i < 100; i++)
             {
-                int random = intList.Random();
+                int random = intList.GetRandomElement();
                 if (random == 0)
                     count0++;
                 else if (random == 1)
@@ -175,7 +175,7 @@ namespace System.Collections.Generic
         public void Random_From_List_Test_Null_List_Exception()
         {
             List<int> intList = null;
-            intList.Random();
+            intList.GetRandomElement();
         }
 
         #endregion
@@ -193,7 +193,7 @@ namespace System.Collections.Generic
 
             int count = 10;
 
-            var randomList = list.RandomSelection(count).ToList();
+            var randomList = list.GetRandomSelection(count).ToList();
             Assert.AreEqual(count, randomList.Count);
         }
 

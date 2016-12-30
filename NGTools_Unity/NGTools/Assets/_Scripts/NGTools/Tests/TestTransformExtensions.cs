@@ -5,7 +5,7 @@ using UnityEngine.Assertions;
 
 public class TestTransformExtensions : MonoBehaviour
 {
-    void Start()
+    protected void Start()
     {
         #region Test Vector3 methods
         Vector3 toCompare = Vector3.zero;

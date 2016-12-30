@@ -11,7 +11,7 @@ namespace System.Collections.Generic
 
         public const string NULL_LIST = "NULL List";
         public const string EMPTY_LIST = "EMPTY List";
-        public static string ExtendedToString<T>(this List<T> list, string delimiter = "\n")
+        public static string ToStringDelimited<T>(this List<T> list, string delimiter = "\n")
         {
             if (list == null)
                 return NULL_LIST;
@@ -33,7 +33,7 @@ namespace System.Collections.Generic
 
         public const string NULL_DICTIONARY = "NULL Dictionary";
         public const string EMPTY_DICTIONARY = "EMPTY Dictionary";
-        public static string ExtendedToString<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, string delimiter = "\n")
+        public static string ToStringDelimited<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, string delimiter = "\n")
         {
             if (dictionary == null)
                 return NULL_DICTIONARY;
@@ -58,13 +58,13 @@ namespace System.Collections.Generic
             return s;
         }
 
-        public static T Random<T>(this IEnumerable<T> enumerable)
+        public static T GetRandomElement<T>(this IEnumerable<T> enumerable)
         {
             return enumerable.OrderBy(e => Guid.NewGuid()).FirstOrDefault();
         }
 
 
-        public static IEnumerable<T> RandomSelection<T>(this IEnumerable<T> enumerable, int count)
+        public static IEnumerable<T> GetRandomSelection<T>(this IEnumerable<T> enumerable, int count)
         {
             count = enumerable.Count() < count ? enumerable.Count() : count;
             return enumerable.OrderBy(e => Guid.NewGuid()).Take(count);

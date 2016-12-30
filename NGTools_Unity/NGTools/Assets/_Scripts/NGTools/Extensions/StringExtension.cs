@@ -1,7 +1,9 @@
 // Standard number formatting codes.
 // https://msdn.microsoft.com/en-us/library/dwhawy9k(v=vs.110).aspx
 
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 public static class StringExtension 
 {
@@ -73,5 +75,18 @@ public static class StringExtension
         }
 
         return false;
+    }
+
+    /// <summary>
+    /// Random alphanumeric string generator
+    /// </summary>
+    /// <param name="length"></param>
+    /// <returns></returns>
+    public static string RandomString(int length)
+    {
+        Random random = new Random();
+        const string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        return new string(Enumerable.Repeat(chars, length)
+          .Select(s => s[random.Next(s.Length)]).ToArray());
     }
 }
