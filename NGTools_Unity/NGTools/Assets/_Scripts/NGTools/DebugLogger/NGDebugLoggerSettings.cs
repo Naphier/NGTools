@@ -42,9 +42,7 @@ namespace NG.Logging
             }
 
             if (((platform & Platform.Web) == Platform.Web) &&
-                (Application.platform == RuntimePlatform.WebGLPlayer ||
-                Application.platform == RuntimePlatform.OSXWebPlayer ||
-                Application.platform == RuntimePlatform.WindowsWebPlayer))
+                Application.platform == RuntimePlatform.WebGLPlayer)
             {
                 return true;
             }

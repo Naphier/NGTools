@@ -23,7 +23,7 @@ public class KillOutOfBoundsParticles : MonoBehaviour
         {
             if (GetIsOutOfBounds(m_Particles[i].position))
             {
-                m_Particles[i].lifetime = 0;
+                m_Particles[i].remainingLifetime = 0;
                 killNow = true;
             }
         }
@@ -70,8 +70,8 @@ public class KillOutOfBoundsParticles : MonoBehaviour
         if (m_System == null)
             m_System = GetComponent<ParticleSystem>();
 
-        if (m_Particles == null || m_Particles.Length < m_System.maxParticles)
-            m_Particles = new ParticleSystem.Particle[m_System.maxParticles];
+        if (m_Particles == null || m_Particles.Length < m_System.main.maxParticles)
+            m_Particles = new ParticleSystem.Particle[m_System.main.maxParticles];
     }
 
 

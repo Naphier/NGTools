@@ -15,7 +15,8 @@ public class ParticleSystemSpeed : MonoBehaviour
     void Start()
     {
         psys = gameObject.GetComponent<ParticleSystem>();
-        psys.playbackSpeed = speed;
+		ParticleSystem.MainModule main = psys.main;
+        main.simulationSpeed= speed;
     }
 
 
@@ -24,9 +25,10 @@ public class ParticleSystemSpeed : MonoBehaviour
         if (!lockSpeed)
             return;
 
-        if (!Mathf.Approximately(psys.playbackSpeed, speed))
+        if (!Mathf.Approximately(psys.main.simulationSpeed, speed))
         {
-            psys.playbackSpeed = speed;
-        }
+			ParticleSystem.MainModule main = psys.main;
+			main.simulationSpeed = speed;
+		}
     }
 }
