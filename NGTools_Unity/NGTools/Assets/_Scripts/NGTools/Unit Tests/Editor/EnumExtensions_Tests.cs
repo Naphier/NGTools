@@ -8,26 +8,23 @@ namespace System
     {
         public enum TestEnum { none = 0, a, b, c, d}
 
-        [TestCase("a", Result = TestEnum.a)]
-        [TestCase("b", Result = TestEnum.b)]
-        [TestCase("c", Result = TestEnum.c)]
-        [TestCase("d", Result = TestEnum.d)]
-        [TestCase("none", Result = TestEnum.none)]
-        [TestCase("not in enum elements", Result = TestEnum.none)]
-        [TestCase("A", Result = TestEnum.a)] //case insensitivity
+        [TestCase("a", ExpectedResult = TestEnum.a)]
+        [TestCase("b", ExpectedResult = TestEnum.b)]
+        [TestCase("c", ExpectedResult = TestEnum.c)]
+        [TestCase("d", ExpectedResult = TestEnum.d)]
+        [TestCase("none", ExpectedResult = TestEnum.none)]
+        [TestCase("not in enum elements", ExpectedResult = TestEnum.none)]
+        [TestCase("A", ExpectedResult = TestEnum.a)] //case insensitivity
         public TestEnum ToEnum_Test_Normal_Usage(string toConvert)
         {
             return toConvert.ToEnum<TestEnum>();
         }
 
         [Test]
-        [ExpectedException(typeof(NotSupportedException))]
         public void ToEnum_Test_Exception()
         {
             string silly = "sillyString";
-            silly.ToEnum<DateTime>();
+            Assert.Throws(typeof(NotSupportedException), () => { silly.ToEnum<DateTime>(); });
         }
-         
-        
     }
 }

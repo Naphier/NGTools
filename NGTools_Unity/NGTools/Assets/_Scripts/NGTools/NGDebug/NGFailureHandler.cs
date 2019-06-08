@@ -77,7 +77,7 @@ namespace NG.AssertDebug
             }
 
             if (AssertDebugConfig.instance.takeScreenShot)
-                Application.CaptureScreenshot(AssertDebugConfig.instance.GetScreenShotFileName());
+                ScreenCapture.CaptureScreenshot(AssertDebugConfig.instance.GetScreenShotFileName());
 #pragma warning restore
 
 

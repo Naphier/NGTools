@@ -23,11 +23,10 @@ namespace System.Collections.Generic
         }
 
         [Test]
-        [ExpectedException(typeof(NullReferenceException))]
         public void AddMany_Null_List_Exception()
         {
             List<int> intList = null;
-            intList.AddMany(0, 1, 2, 3);
+            Assert.Throws(typeof(NullReferenceException), () => { intList.AddMany(0, 1, 2, 3); });
         }
         #endregion
 
@@ -171,11 +170,10 @@ namespace System.Collections.Generic
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Random_From_List_Test_Null_List_Exception()
         {
             List<int> intList = null;
-            intList.GetRandomElement();
+            Assert.Throws(typeof(ArgumentNullException), () => { intList.GetRandomElement(); });
         }
 
         #endregion

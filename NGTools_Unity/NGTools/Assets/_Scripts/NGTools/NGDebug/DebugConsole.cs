@@ -301,7 +301,7 @@ public class DebugConsole : MonoBehaviour
         bool wasVisible = DebugConsole.instance.isVisible;
         DebugConsole.instance.isVisible = false;
         yield return new WaitForEndOfFrame();
-        Application.CaptureScreenshot(pathfile);
+        ScreenCapture.CaptureScreenshot(pathfile);
         yield return new WaitForEndOfFrame();
         DebugConsole.instance.isVisible = wasVisible;
 

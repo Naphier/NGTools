@@ -198,13 +198,13 @@ namespace NG.HttpClient
             switch (resultType)
             {
                 case ResultData.audioClip:
-                    result.audioClip = www.audioClip;
+                    result.audioClip = www.GetAudioClip();
                     break;
                 case ResultData.bytes:
                     result.bytes = www.bytes;
                     break;
                 case ResultData.movie:
-                    result.movieTexture = www.movie;
+                    result.movieTexture = www.GetMovieTexture();
                     break;
                 case ResultData.texture:
                     result.texture2d = www.texture;
