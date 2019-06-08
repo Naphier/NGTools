@@ -32,7 +32,7 @@ namespace NG.Logging
                 Init();
                 if (_consoleLogger == null)
                 {
-                    _consoleLogger = UnityEngine.Debug.logger;
+                    _consoleLogger = UnityEngine.Debug.unityLogger;
                     _consoleLogger.logEnabled = consoleLogEnabled;
                     _consoleLogger.filterLogType = (LogType.Assert | LogType.Error | LogType.Exception | LogType.Log | LogType.Warning);
                 }

@@ -1,7 +1,7 @@
 # NGTools
 Unity Editor Extensions and Tools by Napland Games  
   
-Each tool is in it's own directory under _Scripts unless the tool is only one class file and doesn't rely on any others.  
+Each tool is in it's own directory under Assets/NGTools unless the tool is only one class file and doesn't rely on any others.  
   
 The Custom Transform Component can be found as a standalone release in the tags section.  
   
